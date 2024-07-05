@@ -26,7 +26,7 @@ def generate():
 
     # Define the prompt for generating the presentation slides.
     prompt = f"""
-    generate a {number_of_slides} slide presentation for the topic {presentation_title}. Each slide should have a (header), (content). Return as JSON.
+    generate a {number_of_slides} slide presentation for the topic {presentation_title}. Each slide should have a (header), (content). Return as JSON. Must include 3 bullet points.
     Using this JSON schema:
         {{
             "slides": [
