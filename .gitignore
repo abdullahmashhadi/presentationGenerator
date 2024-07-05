@@ -1,0 +1,14 @@
+.venv/
+
+# Ignore environment variable file
+.env
+
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+
+# Ignore system-specific files
+.DS_Store
+
+# Ignore output files
+output.pptx

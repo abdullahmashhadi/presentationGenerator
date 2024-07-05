@@ -1,0 +1,6 @@
+Flask==2.2.5
+Werkzeug==2.2.2
+requests==2.27.1
+python-dotenv==1.0.0
+google-generativeai==0.7.1 # Include the appropriate version of the Gemini API client if available
+python-pptx==0.6.21
