@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 import os
 import io
 import requests
-
+from pptx.oxml import parse_xml
 app = Flask(__name__)
 
 # Load the environment variables from the .env file
@@ -81,19 +81,32 @@ def generate():
             image_stream = io.BytesIO(image_response.content)
             new_slide.shapes.add_picture(image_stream, 0, 0, width=prs.slide_width, height=prs.slide_height)
 
-        # Add a semi-transparent rectangle as text background
-        left = Inches(1)
-        top = Inches(1)
-        width = prs.slide_width - Inches(2)
-        height = prs.slide_height - Inches(2)
+            # Add a semi-transparent rectangle as text background
+            left = Inches(1)
+            top = Inches(1)
+            width = prs.slide_width - Inches(2)
+            height = prs.slide_height - Inches(2)
 
-        shape = new_slide.shapes.add_shape(
-            MSO_SHAPE.RECTANGLE, left, top, width, height
-        )
-        shape.fill.solid()
-        shape.fill.fore_color.rgb = RGBColor(255, 255, 255)
-        shape.fill.transparency = 0
-        shape.line.color.rgb = RGBColor(255, 255, 255)  # Make the border transparent
+            shape = new_slide.shapes.add_shape(
+                MSO_SHAPE.RECTANGLE, left, top, width, height
+            )
+
+
+            shape.fill.solid()
+            fill_color = shape.fill.fore_color
+            fill_color.rgb = RGBColor(255, 255, 255)
+
+            # Modify XML to set transparency
+            sp = shape._element
+            solidFill = sp.find(".//a:solidFill", sp.nsmap)
+            srgbClr = solidFill.find(".//a:srgbClr", sp.nsmap)
+
+            # Add transparency (0.3 means 30% transparent)
+            alpha = parse_xml('<a:alpha xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" val="40000"/>')  # 30% transparent
+            srgbClr.append(alpha)
+
+            shape.line.fill.background()  # Make the border transparent
+
 
         # Add the header and content text on top of the rectangle
         text_box = new_slide.shapes.add_textbox(left + Inches(0.2), top + Inches(0.2), width - Inches(0.4), height - Inches(0.4))
