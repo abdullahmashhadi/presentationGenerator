@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 import os
 import io
 import requests
-import re
 
 app = Flask(__name__)
 
@@ -93,7 +92,7 @@ def generate():
         )
         shape.fill.solid()
         shape.fill.fore_color.rgb = RGBColor(255, 255, 255)
-        shape.fill.transparency = 0.5  # Adjust transparency as needed
+        shape.fill.transparency = 0
         shape.line.color.rgb = RGBColor(255, 255, 255)  # Make the border transparent
 
         # Add the header and content text on top of the rectangle
@@ -110,10 +109,9 @@ def generate():
             p.font.color.rgb = RGBColor(0, 0, 0)  # Black font color
             p.space_after = Pt(14)
 
-        # Remove asterisks and add the content as bullet points
+        # Add the content as bullet points
         if slide['content']:
-            content = re.sub(r'\*\*(.*?)\*\*', r'\1', slide['content'])  # Remove the asterisks
-            content_lines = content.split('\n')
+            content_lines = slide['content'].split('\n')
             for line in content_lines:
                 p = text_frame.add_paragraph()
                 p.text = line
