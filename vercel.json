@@ -13,7 +13,8 @@
       "src": "backend/app.py",
       "use": "@vercel/python",
       "config": {
-        "runtime": "python3.9"
+        "runtime": "python3.9",
+        "maxLambdaSize": "50mb"
       }
     }
   ],
@@ -26,10 +27,5 @@
       "src": "/(.*)",
       "dest": "frontend/out/$1"
     }
-  ],
-  "functions": {
-    "backend/app.py": {
-      "maxDuration": 60
-    }
-  }
+  ]
 }
