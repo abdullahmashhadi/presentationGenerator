@@ -5,7 +5,7 @@
       "src": "frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "frontend/.next"
+        "distDir": "frontend/out"
       }
     },
     {
@@ -23,13 +23,9 @@
     },
     {
       "src": "/(.*)",
-      "dest": "frontend/$1"
+      "dest": "frontend/out/$1"
     }
   ],
-  "env": {
-    "API_KEY": "@api-key",
-    "PEXELS_API_KEY": "@pexels-api-key"
-  },
   "functions": {
     "backend/app.py": {
       "maxDuration": 60

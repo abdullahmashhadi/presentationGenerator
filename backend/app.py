@@ -7,6 +7,7 @@ import io
 import uuid
 import logging
 import warnings
+import time
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, asdict
@@ -56,7 +57,7 @@ CORS(app, origins=allowed_origins,
      allow_headers=['Content-Type', 'Authorization'])
 
 # Configuration
-GEMINI_API_KEY = os.getenv("API_KEY")
+GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY")
 PEXELS_API_KEY = os.getenv("PEXELS_API_KEY")
 
 if not GEMINI_API_KEY:
@@ -592,3 +593,8 @@ if __name__ == '__main__':
     except Exception as e:
         logger.error(f"❌ Server error: {str(e)}")
         raise
+
+# Vercel handler
+def handler(request, response):
+    """Vercel serverless function handler"""
+    return app(request, response)
