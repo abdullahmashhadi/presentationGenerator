@@ -7,14 +7,6 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
   },
-  async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: `${process.env.NEXT_PUBLIC_BACKEND_URL || 'https://your-app.vercel.app'}/api/:path*`,
-      },
-    ];
-  },
 };
 
 module.exports = nextConfig;
