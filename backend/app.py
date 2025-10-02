@@ -204,13 +204,19 @@ class PresentationGenerator:
             logger.info(f"🤖 Generating content with Gemini AI for: {request_data.title}")
             logger.info(f"📝 Prompt length: {len(prompt)} characters")
             
+            # Configure for faster response
+            generation_config = genai.GenerationConfig(
+                response_mime_type="application/json",
+                temperature=0.7,
+                max_output_tokens=4096,  # Reduced from 8192 for faster response
+                top_p=0.95,
+                top_k=40
+            )
+            
             response = self.model.generate_content(
                 prompt,
-                generation_config={
-                    "response_mime_type": "application/json",
-                    "temperature": 0.7,
-                    "max_output_tokens": 8192
-                }
+                generation_config=generation_config,
+                request_options={'timeout': 45}  # 45 second timeout
             )
             
             logger.info("✅ Received response from Gemini AI")
@@ -486,16 +492,9 @@ def generate_presentation():
         slides = generator.generate_content(req)
         logger.info(f"✅ Content generation completed: {len(slides)} slides")
         
-        # Fetch images if requested
-        if req.include_images and PEXELS_API_KEY:
-            logger.info("🖼️  Fetching images from Pexels...")
-            for i, slide in enumerate(slides):
-                if slide.header:
-                    logger.info(f"🔍 Fetching image for slide {i+1}: '{slide.header}'")
-                    slide.image_url = generator.fetch_image(slide.header)
-            logger.info("✅ Image fetching completed")
-        else:
-            logger.info("⏭️  Skipping image fetching")
+        # Skip image fetching on Vercel to avoid timeout (images take too long)
+        # Images can be added manually or in a background job later
+        logger.info("⏭️  Skipping image fetching for faster response")
         
         # Create presentation
         logger.info("📋 Creating PowerPoint presentation...")
