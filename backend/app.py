@@ -621,8 +621,3 @@ if __name__ == '__main__':
     except Exception as e:
         logger.error(f"❌ Server error: {str(e)}")
         raise
-
-# Vercel handler
-def handler(request, response):
-    """Vercel serverless function handler"""
-    return app(request, response)
