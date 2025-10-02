@@ -45,16 +45,12 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Configure CORS for production
-allowed_origins = [
-    "http://localhost:3000",
-    "https://*.vercel.app",
-    "https://your-domain.com"  # Replace with your actual domain
-]
-
-CORS(app, origins=allowed_origins, 
+# Configure CORS for production - allow all origins for Vercel
+CORS(app, 
+     origins="*",
      methods=['GET', 'POST'], 
-     allow_headers=['Content-Type', 'Authorization'])
+     allow_headers=['Content-Type', 'Authorization'],
+     supports_credentials=False)
 
 # Configuration
 GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -365,6 +361,7 @@ class PresentationGenerator:
 generator = PresentationGenerator()
 
 # Routes
+@app.route('/api/health', methods=['GET'])
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
@@ -377,6 +374,7 @@ def health_check():
         }
     ).__dict__)
 
+@app.route('/api/templates', methods=['GET'])
 @app.route('/templates', methods=['GET'])
 def get_templates():
     """Get available presentation templates"""
@@ -385,6 +383,7 @@ def get_templates():
         data=[asdict(template) for template in TEMPLATES]
     ).__dict__)
 
+@app.route('/api/preview', methods=['POST'])
 @app.route('/preview', methods=['POST'])
 def preview_slides():
     """Generate slide content preview without creating presentation"""
@@ -419,6 +418,7 @@ def preview_slides():
             error=str(e)
         ).__dict__), 500
 
+@app.route('/api/generate', methods=['POST'])
 @app.route('/generate', methods=['POST'])
 def generate_presentation():
     """Generate complete presentation"""
@@ -507,6 +507,7 @@ def generate_presentation():
             error=str(e)
         ).__dict__), 500
 
+@app.route('/api/download/<presentation_id>', methods=['GET'])
 @app.route('/download/<presentation_id>', methods=['GET'])
 def download_presentation(presentation_id: str):
     """Download generated presentation"""
