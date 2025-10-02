@@ -361,6 +361,23 @@ class PresentationGenerator:
 generator = PresentationGenerator()
 
 # Routes
+@app.route('/')
+def index():
+    """Root endpoint for debugging"""
+    return jsonify({
+        "message": "AI Presentation Generator API",
+        "version": "2.0.0",
+        "endpoints": {
+            "health": "/api/health or /health",
+            "templates": "/api/templates or /templates",
+            "generate": "/api/generate or /generate",
+            "preview": "/api/preview or /preview",
+            "download": "/api/download/<id> or /download/<id>"
+        },
+        "gemini_configured": bool(GEMINI_API_KEY),
+        "pexels_configured": bool(PEXELS_API_KEY)
+    })
+
 @app.route('/api/health', methods=['GET'])
 @app.route('/health', methods=['GET'])
 def health_check():
@@ -378,10 +395,20 @@ def health_check():
 @app.route('/templates', methods=['GET'])
 def get_templates():
     """Get available presentation templates"""
-    return jsonify(ApiResponse(
-        success=True,
-        data=[asdict(template) for template in TEMPLATES]
-    ).__dict__)
+    try:
+        logger.info("📋 Templates endpoint called")
+        response_data = ApiResponse(
+            success=True,
+            data=[asdict(template) for template in TEMPLATES]
+        ).__dict__
+        logger.info(f"✅ Returning {len(TEMPLATES)} templates")
+        return jsonify(response_data)
+    except Exception as e:
+        logger.error(f"❌ Error in get_templates: {str(e)}")
+        return jsonify(ApiResponse(
+            success=False,
+            error=f"Failed to load templates: {str(e)}"
+        ).__dict__), 500
 
 @app.route('/api/preview', methods=['POST'])
 @app.route('/preview', methods=['POST'])

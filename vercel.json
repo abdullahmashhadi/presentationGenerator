@@ -12,7 +12,23 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/api/health",
+      "dest": "backend/app.py"
+    },
+    {
+      "src": "/api/templates",
+      "dest": "backend/app.py"
+    },
+    {
+      "src": "/api/preview",
+      "dest": "backend/app.py"
+    },
+    {
+      "src": "/api/generate",
+      "dest": "backend/app.py"
+    },
+    {
+      "src": "/api/download/(.*)",
       "dest": "backend/app.py"
     },
     {
