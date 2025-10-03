@@ -492,9 +492,16 @@ def generate_presentation():
         slides = generator.generate_content(req)
         logger.info(f"✅ Content generation completed: {len(slides)} slides")
         
-        # Skip image fetching on Vercel to avoid timeout (images take too long)
-        # Images can be added manually or in a background job later
-        logger.info("⏭️  Skipping image fetching for faster response")
+        # Fetch images if requested
+        if req.include_images and PEXELS_API_KEY:
+            logger.info("🖼️  Fetching images from Pexels...")
+            for i, slide in enumerate(slides):
+                if slide.header:
+                    logger.info(f"🔍 Fetching image for slide {i+1}: '{slide.header}'")
+                    slide.image_url = generator.fetch_image(slide.header)
+            logger.info("✅ Image fetching completed")
+        else:
+            logger.info("⏭️  Skipping image fetching")
         
         # Create presentation
         logger.info("📋 Creating PowerPoint presentation...")
